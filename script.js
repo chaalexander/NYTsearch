@@ -43,15 +43,21 @@ $("#searchBtn").on("click", function() {
   // get the Number of Records
 
   // get the start year and end year
-  startYear = $("#startYear")
-    .val()
-    .trim();
+  startYear =
+    $("#startYear")
+      .val()
+      .trim() + 0101;
+  // the 0101 is to mark a date, because the users are selecting a year and the computer needs to know the day and month to start
 
-  endYear = $("#endYear")
-    .val()
-    .trim();
+  endYear =
+    $("#endYear")
+      .val()
+      .trim() + 0101;
+  // the 0101 is to mark a date, because the users are selecting a year and the computer needs to know the day and month to start
 
+  // add the date information to the URL
   newURL = newURL + "&begin_date=" + startYear + "&end_date=" + endYear;
+  console.log(newURL);
   // send the ajax call the newly assemble url
   runQuery(10, newURL);
   // this prevents running into a new page, like prevent default
