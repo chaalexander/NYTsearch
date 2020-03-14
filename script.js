@@ -20,9 +20,60 @@ var articleCounter = 0;
 function runQuery(numArticles, queryURL) {
   //AJAX function
   $.ajax({ url: queryURL, method: "GET" }).done(function(NYTData) {
-    // the reason to console.log the queryURl is for us to be able to open the objet in a big screen and are able to see better things
+    console.log("------------------------");
     console.log(queryURL);
+    console.log("------------------------");
+    console.log(numArticles);
     console.log(NYTData);
+    //  clear the wells from the previous run
+    $("#wellSection").empty();
+    for (var i = 0; i < numArticles; i++) {
+      // start dumping to HTML here
+
+      var wellSection = $("<div>");
+      var br = $("<br>");
+      wellSection.addClass("well");
+      wellSection.attr("id", "articleWell-" + i);
+      $("#wellSection").append(wellSection);
+      $("#wellSection").append(br);
+      // check if things exist
+      if (NYTData.response.docs[i].headline != "null") {
+        console.log(NYTData.response.docs[i].headline.main);
+        $("#articleWell-" + i).append(
+          "<h3>" + NYTData.response.docs[i].headline.main + "</h3>"
+        );
+      }
+      // check if the byline
+      if (
+        NYTData.response.docs[i].byline &&
+        NYTData.response.docs[i].byline.hasOwnProperty("original")
+      ) {
+        console.log(NYTData.response.docs[i].byline.original);
+        $("#articleWell-" + i).append(
+          "<h5>" + NYTData.response.docs[i].byline.original + "</h5>"
+        );
+      }
+      // attach the content to the appropriate well
+
+      $("#articleWell-" + i).append(
+        "<h5>" + NYTData.response.docs[i].section_name + "</h5>"
+      );
+      $("#articleWell-" + i).append(
+        "<h5>" + NYTData.response.docs[i].pub_date + "</h5>"
+      );
+
+      $("#articleWell-" + i).append(
+        " <a href= " +
+          NYTData.response.docs[i].web_url +
+          " > " +
+          NYTData.response.docs[i].web_url +
+          " </a> "
+      );
+      console.log(NYTData.response.docs[i].section_name);
+      console.log(NYTData.response.docs[i].pub_date);
+      console.log(NYTData.response.docs[i].web_url);
+    }
+    // the reason to console.log the queryURl is for us to be able to open the objet in a big screen and are able to see better things
   });
 }
 // main process
@@ -30,17 +81,21 @@ function runQuery(numArticles, queryURL) {
 
 $("#searchBtn").on("click", function() {
   // trim means is taking all the white spaces that someone has before the real search and delete.
+
+  // get search term
   var queryTerm = $("#search")
     .val()
     .trim();
-  console.log(queryTerm);
+  // console.log(queryTerm);
 
   // add in the Search Term
   // run the query, give me 10 records of this url.
   var newURL = queryURLBase + "&q=" + queryTerm;
-  console.log(newURL);
+  // console.log(newURL);
 
   // get the Number of Records
+
+  numResults = $("#numRecords").val();
 
   // get the start year and end year
   startYear = $("#startYear")
@@ -69,10 +124,10 @@ $("#searchBtn").on("click", function() {
     newURL = newURL + "&end_date=" + endYear;
   }
 
-  console.log(newURL);
+  // console.log(newURL);
 
   // send the ajax call the newly assemble url
-  runQuery(10, newURL);
+  runQuery(numResults, newURL);
 
   // this prevents running into a new page, like prevent default
   return false;
