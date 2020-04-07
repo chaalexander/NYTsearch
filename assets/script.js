@@ -18,6 +18,7 @@ var articleCounter = 0;
 // ==================
 
 function runQuery(numArticles, queryURL) {
+  console.log(queryURL);
   //AJAX function
   $.ajax({ url: queryURL, method: "GET" }).done(function(NYTData) {
     console.log("------------------------");
